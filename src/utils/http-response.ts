@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-
 import { AppError, isAppError } from "./app-error";
 
 type ResponseBody = {
@@ -26,6 +25,13 @@ export function toErrorResponse(error: unknown): NextResponse<ResponseBody> {
       code: "UNEXPECTED_ERROR",
     },
     { status: 500 },
+  );
+}
+
+export function buildErrorResponse(errors: Record<string, string>) {
+  return NextResponse.json(
+    { errors },
+    { status: 400 }
   );
 }
 

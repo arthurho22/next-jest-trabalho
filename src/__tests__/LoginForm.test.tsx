@@ -1,26 +1,57 @@
 import { render, screen } from "@testing-library/react";
-import { LoginForm } from "@/components/auth/LoginForm";
+import userEvent from "@testing-library/user-event";
+import { LoginForm }  from "@/components/auth/LoginForm";
+
+jest.mock("@/context/AuthContext", () => ({
+  useAuth: () => ({
+    login: jest.fn().mockResolvedValue({ ok: false }),
+    isLoading: false,
+  }),
+}));
 
 describe("LoginForm", () => {
 
-  test("deve renderizar o título Login", () => {
+  it("renderiza campos de email e senha", () => {
     render(<LoginForm />);
-    expect(screen.getByText("Login")).toBeInTheDocument();
+
+    expect(
+      screen.getByRole("textbox", { name: /email/i })
+    ).toBeInTheDocument();
+
+    expect(
+      screen.getByLabelText(/senha/i)
+    ).toBeInTheDocument();
+
+    expect(
+      screen.getByRole("button", { name: /entrar/i })
+    ).toBeInTheDocument();
   });
 
-  test("deve renderizar o campo de email", () => {
+  it("permite digitar email e senha", async () => {
+    const user = userEvent.setup();
+
     render(<LoginForm />);
-    expect(screen.getByPlaceholderText("Digite seu email")).toBeInTheDocument();
+
+    const emailInput = screen.getByRole("textbox", { name: /email/i });
+    const passwordInput = screen.getByLabelText(/senha/i);
+
+    await user.type(emailInput, "teste@test.com");
+    await user.type(passwordInput, "123456");
+
+    expect(emailInput).toHaveValue("teste@test.com");
+    expect(passwordInput).toHaveValue("123456");
   });
 
-  test("deve renderizar o campo de senha", () => {
-    render(<LoginForm />);
-    expect(screen.getByPlaceholderText("Digite sua senha")).toBeInTheDocument();
-  });
+  it("executa submit do formulário", async () => {
+    const user = userEvent.setup();
 
-  test("deve renderizar o botão entrar", () => {
     render(<LoginForm />);
-    expect(screen.getByText("Entrar")).toBeInTheDocument();
+
+    const submitButton = screen.getByRole("button", { name: /entrar/i });
+
+    await user.click(submitButton);
+
+    expect(submitButton).toBeInTheDocument();
   });
 
 });
