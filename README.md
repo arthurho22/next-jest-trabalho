@@ -95,7 +95,7 @@ Pipeline GitHub Actions configurado para:
    1.  Instalar dependências (npm ci)
    2.  Rodar todos os testes com cobertura (npm run test:coverage)
    3.  Falhar o build se a cobertura global não atingir os thresholds
-      Arquivo: ## .github/workflows/ci.yml ##
+      Arquivo: **.github/workflows/ci.yml**
 
 ### Server Component
 - **ServerTaskSummary:** busca resumo no servidor via `taskService.getSummary`
