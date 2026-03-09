@@ -1,19 +1,24 @@
-# AuthTask Manager
+# Trabalho Next.js com Jest e TDD
 
 Aplicação base para o **TRABALHO 01 - Testes unitários com Jest + React Testing Library**.
 
-Este repositório entrega a aplicação funcionando (autenticação + dashboard de tarefas + middleware + Firestore). Os **testes não estão implementados** — o objetivo é que os alunos sigam o **Guia Evolutivo** para construí-los passo a passo.
+Este projeto é uma aplicação Next.js que implementa autenticação e gerenciamento de tarefas, com foco em TDD (Test-Driven Development) e cobertura de testes completa.
 
 ---
 
-## Como começar
+## Ele inclui:
 
-1. **Clone o repositório**
-2. **Instale as dependências:** `npm install`
-3. **Configure o ambiente:** `cp .env.example .env.local` e preencha as variáveis do Firebase
-4. **Rode a aplicação:** `npm run dev`
-5. **Acesse:** http://localhost:3000 — login: `aluno@authtask.dev` / senha: `123456`
-6. **Siga o [GUIA_EVOLUTIVO.md](./GUIA_EVOLUTIVO.md)** para implementar os testes
+API routes (/api/login, /api/logout, /api/tasks)
+
+Componentes React com testes unitários e de integração
+
+Context API (AuthContext)
+
+Serviços (auth.service, task.service)
+
+Pipeline CI/CD no GitHub Actions
+
+Cobertura mínima obrigatória: Statements ≥ 85%, Branches ≥ 80%, Functions ≥ 85%, Lines ≥ 85%
 
 ---
 
@@ -23,52 +28,74 @@ A aplicação segue uma estrutura pensada para **testabilidade** e **separação
 
 ```
 src/
-├── app/                    # Rotas e páginas (App Router)
-│   ├── login/              # Página de login
-│   ├── dashboard/         # Dashboard protegido
-│   ├── api/                # API Routes
-│   │   ├── login/          # POST /api/login
-│   │   ├── logout/         # POST /api/logout
-│   │   └── tasks/          # CRUD de tarefas
-│   └── page.tsx            # Landing
-├── components/             # Componentes React
-│   ├── auth/               # LoginForm
-│   ├── dashboard/          # DashboardClient, TaskList, TaskComposer, ServerTaskSummary
-│   └── providers/          # AppProviders (AuthProvider)
-├── context/                # AuthContext + useAuth
-├── services/               # Lógica de negócio
-│   ├── auth/               # Validação, autenticação, sessão
-│   └── tasks/              # Serviço de tarefas + repositório Firestore
-├── utils/                  # AppError, http-response
-└── __tests__/              # Testes (a implementar)
+├─ app/
+│  ├─ api/
+│  │  ├─ login/        # rota POST /api/login
+│  │  ├─ logout/       # rota POST /api/logout
+│  │  └─ tasks/        # rotas CRUD para tasks
+│  ├─ dashboard/       # páginas do dashboard
+│  └─ login/           # página de login
+├─ components/
+│  ├─ auth/            # LoginForm
+│  ├─ dashboard/       # TaskList, TaskComposer, ServerTaskSummary, DashboardClient
+│  └─ providers/       # AppProviders
+├─ context/            # AuthProvider e useAuth
+├─ services/
+│  ├─ auth/            # authenticateUser, validateLoginPayload
+│  └─ tasks/           # buildTaskService, validateTaskTitle
+├─ utils/
+│  ├─ app-error.ts     # tratamento de erros customizados
+│  ├─ http-response.ts # helpers de resposta HTTP
+│  └─ math.ts          # funções auxiliares
+└─ __tests__/          # testes unitários e integração
 ```
 
-### Separação de responsabilidades
+### Tecnologias Utilizadas
 
 | Camada | Responsabilidade | Testabilidade |
 |--------|------------------|---------------|
-| **Components** | UI, interação do usuário | Testes com RTL, mocks de context/hooks |
-| **Context** | Estado global de autenticação | Testes isolados do Provider e do hook |
-| **Services** | Regras de negócio, validação | Testes unitários puros, sem UI |
-| **API Routes** | HTTP, orquestração | Testes chamando a função POST/GET diretamente |
-| **Utils** | Erros, respostas HTTP | Testes unitários simples |
+| **Next.js 13+** 
+| **TypeScript** 
+| **React 18**
+| **Jest + React Testing Library** 
+| **MSW (Mock Service Worker) para testes avançados de API** 
+| **GitHub Actions para CI/CD** 
 
 ---
 
-## Decisões técnicas
+## Estratégia de Testes
 
 ### Autenticação
-- **Demo user:** credenciais fixas via variáveis de ambiente (adequado para ambiente didático)
-- **Sessão:** cookie HTTP-only com token HMAC-SHA256, TTL de 8 horas
-- **Middleware:** protege `/dashboard` e redireciona usuário não autenticado para `/login`
+- **Testes escritos primeiro (TDD) antes da implementação da lógica** 
+- **Testes unitários** funções, serviços, utilitários
+- **Testes de integração:** componentes com Context API
+- **Mocking avançado:** jest.mock, jest.spyOn, mocks condicionais e fake timers
+- **Testes de rotas:** POST /api/login com todos os cenários (200, 400, 401)
+- **Cobertura mínima exigida pelo Jest:**
 
-### Persistência
+   Statements ≥ 85%
+
+    Branches ≥ 80%
+
+    Functions ≥ 85%
+
+    Lines ≥ 85%
+
+- **Como rodar os testes:** 
+  npm install
+  npm run test
+  npm run test:coverage
+  
+### Configuração de CI/CD
+Pipeline GitHub Actions configurado para:
 - **Firestore REST API:** tarefas em `users/{userId}/tasks`
 - **Variáveis:** `FIREBASE_PROJECT_ID`, `FIREBASE_WEB_API_KEY`
 
 ### Serviço de tarefas
-- **Injeção de dependência:** `buildTaskService({ repository })` permite mockar o repositório nos testes
-- **Validação centralizada:** `validateTaskTitle`, `assertIdentifier` no serviço
+- **1. ** Instalar dependências (npm ci)
+- **2. ** Rodar todos os testes com cobertura (npm run test:coverage)
+- **3. ** Falhar o build se a cobertura global não atingir os thresholds
+   Arquivo: ** .github/workflows/ci.yml **
 
 ### Server Component
 - **ServerTaskSummary:** busca resumo no servidor via `taskService.getSummary`
@@ -76,33 +103,27 @@ src/
 
 ---
 
-## Estratégia de testes
+## Decisões Técnicas
 
-O [GUIA_EVOLUTIVO.md](./GUIA_EVOLUTIVO.md) descreve a estratégia em 12 etapas:
-
-1. **Etapas 0–3:** Configuração + TDD (validação de login, auth, tarefas)
-2. **Etapas 4–5:** Testes unitários e de componentes
-3. **Etapas 6–7:** Mock avançado e Context API
-4. **Etapas 8–9:** Server Component e API Route
-5. **Etapas 10–11:** Cobertura e CI/CD
-6. **Etapa 12:** Desafios bônus (fake timers, snapshot, MSW)
-
+1. Uso de Context API para gerenciamento de autenticação
+2. Separação de serviços e repositórios, facilitando mocks nos testes
+3. Trimming e sanitização de inputs de usuário (sanitizeUserId)
+4. Custom AppError para padronizar erros da aplicação
+   
 ---
 
-## Como rodar
+## Como Executar
+
+- npm install
+- npm run dev 
+- npm run test 
+- npm run test:coverage
+
 
 ### Aplicação
 ```bash
 npm run dev
 ```
-
-### Testes
-```bash
-npm run test           # Executa testes
-npm run test:watch     # Modo watch
-npm run test:coverage  # Com relatório de cobertura
-```
-
 ---
 
 ## Variáveis de ambiente
@@ -115,19 +136,4 @@ Consulte `.env.example`. Principais:
 | `AUTH_DEMO_EMAIL` / `AUTH_DEMO_PASSWORD` | Credenciais de demonstração |
 | `FIREBASE_PROJECT_ID` / `FIREBASE_WEB_API_KEY` | Firestore |
 
----
 
-## Checklist de entrega (alunos)
-
-- [ ] Link do repositório GitHub
-- [ ] README com arquitetura, decisões e estratégia de testes
-- [ ] Histórico de commits demonstrando TDD (3 funcionalidades)
-- [ ] Cobertura mínima: 85% statements, 80% branches, 85% functions, 85% lines
-- [ ] Pipeline CI funcionando
-- [ ] Apresentação 5–10 min: estrutura, teste complexo, pipeline
-
----
-
-## Licença
-
-Uso didático.
