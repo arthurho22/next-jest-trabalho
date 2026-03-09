@@ -98,8 +98,8 @@ Pipeline GitHub Actions configurado para:
       Arquivo: **.github/workflows/ci.yml**
 
 ### Server Component
-- **ServerTaskSummary:** busca resumo no servidor via `taskService.getSummary`
-- Permite testar Server Components com mock do serviço
+ **ServerTaskSummary:** busca resumo no servidor via `taskService.getSummary`
+ Permite testar Server Components com mock do serviço
 
 ---
 
