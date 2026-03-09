@@ -92,10 +92,10 @@ Pipeline GitHub Actions configurado para:
 - **Variáveis:** `FIREBASE_PROJECT_ID`, `FIREBASE_WEB_API_KEY`
 
 ### Serviço de tarefas
-- **1. ** Instalar dependências (npm ci)
-- **2. ** Rodar todos os testes com cobertura (npm run test:coverage)
-- **3. ** Falhar o build se a cobertura global não atingir os thresholds
-   Arquivo: ** .github/workflows/ci.yml **
+   1.  Instalar dependências (npm ci)
+   2.  Rodar todos os testes com cobertura (npm run test:coverage)
+   3.  Falhar o build se a cobertura global não atingir os thresholds
+      Arquivo: ** .github/workflows/ci.yml **
 
 ### Server Component
 - **ServerTaskSummary:** busca resumo no servidor via `taskService.getSummary`
