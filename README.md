@@ -114,10 +114,10 @@ Pipeline GitHub Actions configurado para:
 
 ## Como Executar
 
-- npm install
-- npm run dev 
-- npm run test 
-- npm run test:coverage
+**1.** npm install
+**2.** npm run dev 
+**3.** npm run test 
+**4.** npm run test:coverage
 
 
 ### Aplicação
