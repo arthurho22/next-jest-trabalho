@@ -1,13 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { LoginForm }  from "@/components/auth/LoginForm";
-
-jest.mock("@/context/AuthContext", () => ({
-  useAuth: () => ({
-    login: jest.fn().mockResolvedValue({ ok: false }),
-    isLoading: false,
-  }),
-}));
+import { LoginForm } from "@/components/auth/LoginForm";
 
 describe("LoginForm", () => {
 
