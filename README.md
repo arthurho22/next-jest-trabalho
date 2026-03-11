@@ -1,55 +1,72 @@
 # Trabalho Next.js com Jest e TDD
 
-Aplicação base para o **TRABALHO 01 - Testes unitários com Jest + React Testing Library**.
+Aplicação base para o **TRABALHO 01 - Testes unitários com Jest + React Testing Library**. A intenção é fornecer uma base funcional de login e gerenciamento de tarefas, acompanhada por uma suíte de testes completa que segue o fluxo de TDD e atende aos thresholds de cobertura exigidos.
 
-Este projeto é uma aplicação Next.js que implementa autenticação e gerenciamento de tarefas, com foco em TDD (Test-Driven Development) e cobertura de testes completa.
+## Visão geral
+
+O repositório contém:
+
+- API routes (`/api/login`, `/api/logout`, `/api/tasks` e `tasks/[taskId]`).
+- Componentes React testados com RTL.
+- Context API para gerenciamento de autenticação (`AuthContext`).
+- Serviços separados (`auth.service`, `task.service`, `session.service`) com dependência injetável para facilitar mocks.
+- Utilitários de apoio (`AppError`, respostas HTTP, conversões de dados).
+- Mais de 90 testes cobrindo funções, serviços, componentes, rotas e lógica de sessão.
+- Pipeline de CI/CD (orientação no guia) e configuração de thresholds de cobertura no Jest.
+
+Cobertura global atual (após exclusão de arquivos apenas de tipos):
+
+```
+Statements 89.50% | Branches 80.92% | Functions 93.50% | Lines 89.50%
+```
+
+Os thresholds configurados são 85/80/85/85; os arquivos de tipos (`*.types.ts`) e `teste/setupTests.ts` são ignorados na cobertura.
 
 ---
 
-## Ele inclui:
+## Estrutura do projeto
 
-API routes (/api/login, /api/logout, /api/tasks)
-
-Componentes React com testes unitários e de integração
-
-Context API (AuthContext)
-
-Serviços (auth.service, task.service)
-
-Pipeline CI/CD no GitHub Actions
-
-Cobertura mínima obrigatória: Statements ≥ 85%, Branches ≥ 80%, Functions ≥ 85%, Lines ≥ 85%
-
----
-
-## Arquitetura
-
-A aplicação segue uma estrutura pensada para **testabilidade** e **separação de responsabilidades**.
+A organização da pasta `src` facilita testes isolados e mantenibilidade:
 
 ```
 src/
-├─ app/
-│  ├─ api/
-│  │  ├─ login/        # rota POST /api/login
-│  │  ├─ logout/       # rota POST /api/logout
-│  │  └─ tasks/        # rotas CRUD para tasks
-│  ├─ dashboard/       # páginas do dashboard
-│  └─ login/           # página de login
-├─ components/
-│  ├─ auth/            # LoginForm
-│  ├─ dashboard/       # TaskList, TaskComposer, ServerTaskSummary, DashboardClient
-│  └─ providers/       # AppProviders
-├─ context/            # AuthProvider e useAuth
-├─ services/
-│  ├─ auth/            # authenticateUser, validateLoginPayload
-│  └─ tasks/           # buildTaskService, validateTaskTitle
-├─ utils/
-│  ├─ app-error.ts     # tratamento de erros customizados
-│  ├─ http-response.ts # helpers de resposta HTTP
-│  └─ math.ts          # funções auxiliares
-└─ __tests__/          # testes unitários e integração
-```
+  app/               # páginas e rotas (app router)
+    api/
+      login/route.ts
+      logout/route.ts
+      tasks/route.ts
+      tasks/[taskId]/route.ts
+    dashboard/page.tsx
+    login/page.tsx
+    layout.tsx
+    page.tsx
+  components/        # componentes reutilizáveis
+    auth/LoginForm.tsx
+    dashboard/
+      DashboardClient.tsx
+      ServerTaskSummary.tsx
+      TaskComposer.tsx
+      TaskList.tsx
+    providers/AppProviders.tsx
+  context/            # AuthProvider e useAuth
+  services/           # lógica de negócio
+    auth/
+      auth.service.ts
+      auth.constants.ts
+      auth.types.ts
+      session.service.ts
+      session.edge.ts
+    tasks/
+      task.service.ts
+      task.repository.ts
+      task.types.ts
+  utils/              # utilitários e erros
+    app-error.ts
+    http-response.ts
+    math.ts
 
+__tests__/            # testes unitários e de integração
+```
 ### Tecnologias Utilizadas
 
 | Camada | Responsabilidade | Testabilidade |

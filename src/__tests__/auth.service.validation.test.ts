@@ -35,6 +35,15 @@ describe("validateLoginPayload", () => {
     expect(result).toEqual({});
   });
 
+  it("trims campos antes de validar", () => {
+    const result = validateLoginPayload({
+      email: "  a@b.com  ",
+      password: "  123456  ",
+    });
+
+    expect(result).toEqual({});
+  });
+
 });
 
 describe("hasValidationErrors", () => {

@@ -13,14 +13,8 @@ type FirestoreDocument = {
   fields?: Record<string, FirestoreValue>;
 };
 
-type TaskRepository = {
-  listByUser(userId: string): Promise<Task[]>;
-  createForUser(userId: string, title: string): Promise<Task>;
-  updateCompletion(userId: string, taskId: string, completed: boolean): Promise<Task>;
-  deleteForUser(userId: string, taskId: string): Promise<void>;
-};
 
-function getFirestoreSettings(): { projectId: string; apiKey: string } {
+export function getFirestoreSettings(): { projectId: string; apiKey: string } {
   const projectId = process.env.FIREBASE_PROJECT_ID;
   const apiKey = process.env.FIREBASE_WEB_API_KEY;
 
@@ -35,14 +29,14 @@ function getFirestoreSettings(): { projectId: string; apiKey: string } {
   return { projectId, apiKey };
 }
 
-function buildCollectionUrl(userId: string): string {
+export function buildCollectionUrl(userId: string): string {
   const { projectId, apiKey } = getFirestoreSettings();
   const safeUserId = encodeURIComponent(userId);
 
   return `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/users/${safeUserId}/tasks?key=${apiKey}`;
 }
 
-function buildDocumentUrl(userId: string, taskId: string): string {
+export function buildDocumentUrl(userId: string, taskId: string): string {
   const { projectId, apiKey } = getFirestoreSettings();
   const safeUserId = encodeURIComponent(userId);
   const safeTaskId = encodeURIComponent(taskId);
@@ -50,7 +44,7 @@ function buildDocumentUrl(userId: string, taskId: string): string {
   return `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/users/${safeUserId}/tasks/${safeTaskId}?key=${apiKey}`;
 }
 
-function toFirestoreTaskFields(title: string, completed = false): Record<string, FirestoreValue> {
+export function toFirestoreTaskFields(title: string, completed = false): Record<string, FirestoreValue> {
   const now = Date.now();
 
   return {
@@ -61,7 +55,7 @@ function toFirestoreTaskFields(title: string, completed = false): Record<string,
   };
 }
 
-function toFirestoreCompletionFields(
+export function toFirestoreCompletionFields(
   completed: boolean,
 ): Record<string, FirestoreValue> {
   return {
@@ -70,7 +64,7 @@ function toFirestoreCompletionFields(
   };
 }
 
-function parseInteger(value: FirestoreValue | undefined): number {
+export function parseInteger(value: FirestoreValue | undefined): number {
   if (!value?.integerValue) {
     return 0;
   }
@@ -79,7 +73,7 @@ function parseInteger(value: FirestoreValue | undefined): number {
   return Number.isFinite(parsed) ? parsed : 0;
 }
 
-function fromFirestoreDocument(document: FirestoreDocument): Task {
+export function fromFirestoreDocument(document: FirestoreDocument): Task {
   const fields = document.fields ?? {};
   const pathParts = document.name.split("/");
   const id = pathParts[pathParts.length - 1] ?? "";
@@ -93,7 +87,7 @@ function fromFirestoreDocument(document: FirestoreDocument): Task {
   };
 }
 
-async function parseJsonSafe<T>(response: Response): Promise<T | null> {
+export async function parseJsonSafe<T>(response: Response): Promise<T | null> {
   try {
     return (await response.json()) as T;
   } catch {
@@ -101,7 +95,7 @@ async function parseJsonSafe<T>(response: Response): Promise<T | null> {
   }
 }
 
-function throwIfNotOk(response: Response, fallbackMessage: string): never | void {
+export function throwIfNotOk(response: Response, fallbackMessage: string): never | void {
   if (response.ok) {
     return;
   }

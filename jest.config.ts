@@ -20,6 +20,13 @@ const config: Config = {
     "!src/**/__tests__/**",
   ],
 
+  // ignore purely-type or setup modules that cannot contribute
+  coveragePathIgnorePatterns: [
+    "<rootDir>/src/services/auth/auth.types.ts",
+    "<rootDir>/src/services/tasks/task.types.ts",
+    "<rootDir>/src/teste/setupTests.ts",
+  ],
+
   // thresholds de cobertura
   coverageThreshold: {
     global: {
